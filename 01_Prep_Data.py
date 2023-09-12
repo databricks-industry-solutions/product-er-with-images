@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md The purpose of this notebook is to prepare the data required for the Zingg Product Matching with Image Data solution accelerator.  This notebook was developed on a **Databricks 12.2 LTS** cluster.
+# MAGIC %md The purpose of this notebook is to prepare the data required for the Zingg Product Matching with Image Data solution accelerator.  This notebook ###.
 
 # COMMAND ----------
 
@@ -56,26 +56,26 @@ os.environ['DOWNLOADS_FOLDER'] = '/dbfs' + config['dir']['downloads']
 # DBTITLE 1,Download & Extract the Data
 # MAGIC %sh 
 # MAGIC
-# MAGIC rm -rf $DOWNLOADS_FOLDER 2> /dev/null
+# MAGIC # rm -rf $DOWNLOADS_FOLDER 2> /dev/null
 # MAGIC mkdir -p $DOWNLOADS_FOLDER
 # MAGIC cd $DOWNLOADS_FOLDER
 # MAGIC
 # MAGIC # download the images files
-# MAGIC wget -q https://amazon-berkeley-objects.s3.amazonaws.com/archives/abo-images-small.tar
+# MAGIC wget -qN https://amazon-berkeley-objects.s3.amazonaws.com/archives/abo-images-small.tar
 # MAGIC
 # MAGIC # decompress the images files
 # MAGIC # (untars to a folder called images)
 # MAGIC tar -xf ./abo-images-small.tar
-# MAGIC rm ./abo-images-small.tar
+# MAGIC # rm ./abo-images-small.tar
 # MAGIC gzip -df ./images/metadata/images.csv.gz
 # MAGIC
 # MAGIC
 # MAGIC # download the listings files
-# MAGIC wget -q https://amazon-berkeley-objects.s3.amazonaws.com/archives/abo-listings.tar
+# MAGIC wget -qN https://amazon-berkeley-objects.s3.amazonaws.com/archives/abo-listings.tar
 # MAGIC
 # MAGIC # decompress the listings files
 # MAGIC tar -xf ./abo-listings.tar
-# MAGIC rm ./abo-listings.tar
+# MAGIC # rm ./abo-listings.tar
 # MAGIC
 # MAGIC # decompress the listing files
 # MAGIC gunzip ./listings/metadata/*.gz

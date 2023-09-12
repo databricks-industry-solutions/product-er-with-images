@@ -23,6 +23,10 @@
 
 # COMMAND ----------
 
+
+
+# COMMAND ----------
+
 # DBTITLE 0,Install util packages
 # MAGIC %pip install git+https://github.com/databricks-academy/dbacademy@v1.0.13 git+https://github.com/databricks-industry-solutions/notebook-solution-companion@safe-print-html --quiet --disable-pip-version-check
 # MAGIC dbutils.library.restartPython()
@@ -85,9 +89,9 @@ job_json = {
             {
                 "job_cluster_key": "product_er_with_images",
                 "notebook_task": {
-                    "notebook_path": f"01_Prep_Data"
+                    "notebook_path": f"00_Intro_&_Config"
                 },
-                "task_key": "01",
+                "task_key": "00",
                 "libraries": [
                     {"jar": "dbfs:/tmp/solacc/product_er_with_images/jar/zingg-0.4.0-SNAPSHOT.jar"},
                     {"whl": "dbfs:/tmp/solacc/product_er_with_images/jar/zingg-0.4.0-py2.py3-none-any.whl"}
@@ -96,7 +100,23 @@ job_json = {
             {
                 "job_cluster_key": "product_er_with_images",
                 "notebook_task": {
-                    "notebook_path": f"02_Initial_Workflow"
+                    "notebook_path": f"01_Prep_Data"
+                },
+                "task_key": "01",
+                "libraries": [
+                    {"jar": "dbfs:/tmp/solacc/product_er_with_images/jar/zingg-0.4.0-SNAPSHOT.jar"},
+                    {"whl": "dbfs:/tmp/solacc/product_er_with_images/jar/zingg-0.4.0-py2.py3-none-any.whl"}
+                  ],
+                "depends_on": [
+                    {
+                        "task_key": "00"
+                    }
+                ]
+            },
+            {
+                "job_cluster_key": "product_er_with_images",
+                "notebook_task": {
+                    "notebook_path": f"02_Initial_Workflow_Part_A"
                 },
                 "task_key": "02",
                 "libraries": [
@@ -110,9 +130,9 @@ job_json = {
                 ]
             },
             {
-                "job_cluster_key": "product_er_with_images",
+                "job_cluster_key": "product_er_with_images_2",
                 "notebook_task": {
-                    "notebook_path": f"03_Incremental_Workflow"
+                    "notebook_path": f"02_Initial_Workflow_Part_B"
                 },
                 "task_key": "03",
                 "libraries": [
@@ -122,6 +142,22 @@ job_json = {
                 "depends_on": [
                     {
                         "task_key": "02"
+                    }
+                ]
+            },
+            {
+                "job_cluster_key": "product_er_with_images_2",
+                "notebook_task": {
+                    "notebook_path": f"03_Incremental_Workflow"
+                },
+                "task_key": "04",
+                "libraries": [
+                    {"jar": "dbfs:/tmp/solacc/product_er_with_images/jar/zingg-0.4.0-SNAPSHOT.jar"},
+                    {"whl": "dbfs:/tmp/solacc/product_er_with_images/jar/zingg-0.4.0-py2.py3-none-any.whl"}
+                  ],
+                "depends_on": [
+                    {
+                        "task_key": "03"
                     }
                 ]
             }
@@ -140,15 +176,23 @@ job_json = {
                         "usage": "solacc_testing"
                     },
                 }
+            },
+            {
+                "job_cluster_key": "product_er_with_images_2",
+                "new_cluster": {
+                    "spark_version": "12.2.x-scala2.12",
+                "spark_conf": {
+                    "spark.databricks.delta.formatCheck.enabled": "false"
+                    },
+                    "num_workers": 4,
+                    "node_type_id": {"AWS": "i3.xlarge", "MSA": "Standard_DS3_v2", "GCP": "n1-highmem-4"},
+                    "custom_tags": {
+                        "usage": "solacc_testing"
+                    },
+                }
             }
         ]
     }
-
-# COMMAND ----------
-
-spark.sql(f"CREATE DATABASE IF NOT EXISTS databricks_solacc LOCATION '/databricks_solacc/'")
-spark.sql(f"CREATE TABLE IF NOT EXISTS databricks_solacc.dbsql (path STRING, id STRING, solacc STRING)")
-dbsql_config_table = "databricks_solacc.dbsql"
 
 # COMMAND ----------
 
@@ -156,4 +200,3 @@ dbutils.widgets.dropdown("run_job", "False", ["True", "False"])
 run_job = dbutils.widgets.get("run_job") == "True"
 nsc = NotebookSolutionCompanion()
 nsc.deploy_compute(job_json, run_job=run_job)
-_ = nsc.deploy_dbsql("./dashboards/IoT Streaming SA Anomaly Detection.dbdash", dbsql_config_table, spark)
