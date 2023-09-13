@@ -17,7 +17,7 @@
 # COMMAND ----------
 
 # DBTITLE 1,Install Required Libraries
-# MAGIC %pip install -U sentence-transformers 
+# MAGIC %pip install -U sentence-transformers==2.2.2 
 
 # COMMAND ----------
 
@@ -57,28 +57,36 @@ os.environ['DOWNLOADS_FOLDER'] = '/dbfs' + config['dir']['downloads']
 # MAGIC %sh 
 # MAGIC
 # MAGIC # rm -rf $DOWNLOADS_FOLDER 2> /dev/null
-# MAGIC mkdir -p $DOWNLOADS_FOLDER
-# MAGIC cd $DOWNLOADS_FOLDER
+# MAGIC mkdir -p /databricks/driver/tmp_download/
+# MAGIC cd /databricks/driver/tmp_download/
 # MAGIC
 # MAGIC # download the images files
 # MAGIC wget -qN https://amazon-berkeley-objects.s3.amazonaws.com/archives/abo-images-small.tar
+# MAGIC echo "abo-images-small.tar downloaded"
 # MAGIC
 # MAGIC # decompress the images files
 # MAGIC # (untars to a folder called images)
-# MAGIC tar -xf ./abo-images-small.tar
-# MAGIC # rm ./abo-images-small.tar
+# MAGIC tar -xf ./abo-images-small.tar --no-same-owner
+# MAGIC echo "abo-images-small.tar expanded"
+# MAGIC rm ./abo-images-small.tar
 # MAGIC gzip -df ./images/metadata/images.csv.gz
-# MAGIC
+# MAGIC echo "/images/metadata/images.csv.gz gzipped"
 # MAGIC
 # MAGIC # download the listings files
 # MAGIC wget -qN https://amazon-berkeley-objects.s3.amazonaws.com/archives/abo-listings.tar
-# MAGIC
+# MAGIC echo "abo-listings.tar downloaded"
 # MAGIC # decompress the listings files
-# MAGIC tar -xf ./abo-listings.tar
-# MAGIC # rm ./abo-listings.tar
+# MAGIC tar -xf ./abo-listings.tar --no-same-owner
+# MAGIC echo "abo-listings.tar expanded"
+# MAGIC rm ./abo-listings.tar
 # MAGIC
 # MAGIC # decompress the listing files
-# MAGIC gunzip ./listings/metadata/*.gz
+# MAGIC gunzip -f ./listings/metadata/*.gz
+# MAGIC echo "./listings/metadata/*.gz gunzipped"
+
+# COMMAND ----------
+
+# MAGIC %sh cp -r /databricks/driver/tmp_download/* $DOWNLOADS_FOLDER
 
 # COMMAND ----------
 

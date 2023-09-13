@@ -101,8 +101,8 @@ config['model name'] = 'zingg_abo'
 # COMMAND ----------
 
 # DBTITLE 1,Directories
-# mount path where files are stored
-mount_path = '/mnt/abo'
+# path where files are stored
+mount_path = '/tmp/abo'
 
 config['dir'] = {}
 
