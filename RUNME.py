@@ -79,7 +79,7 @@ from solacc.companion import NotebookSolutionCompanion
 # COMMAND ----------
 
 job_json = {
-        "timeout_seconds": 28800,
+        "timeout_seconds": 86400,
         "max_concurrent_runs": 1,
         "tags": {
             "usage": "solacc_testing",
