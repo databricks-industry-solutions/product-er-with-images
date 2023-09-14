@@ -86,7 +86,7 @@ os.environ['DOWNLOADS_FOLDER'] = '/dbfs' + config['dir']['downloads']
 
 # COMMAND ----------
 
-# MAGIC %sh cp -r /databricks/driver/tmp_download/* $DOWNLOADS_FOLDER
+dbutils.fs.cp("file:/databricks/driver/tmp_download/", config['dir']['downloads'], True)
 
 # COMMAND ----------
 
